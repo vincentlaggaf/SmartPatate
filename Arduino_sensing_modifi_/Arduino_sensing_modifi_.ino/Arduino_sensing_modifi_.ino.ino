@@ -34,9 +34,9 @@ int sizeOfArray = N;
  
 float peakVoltage = 0;
 float peakFreq = 0;
-float seuilRien = 0; //trouver la bonne valeur
-float seuil1doigt = 0; //trouver la bonne valeur
-float seuil2doigts = 0; //trouver la bonne valeur
+float seuilRien = 55; //trouver la bonne valeur
+float seuil1doigt = 90; //trouver la bonne valeur
+float seuil2doigts = 119; //trouver la bonne valeur
  
    
  
@@ -51,6 +51,9 @@ void setup()
  
   pinMode(9,OUTPUT);        //-Signal generator pin
   pinMode(8,OUTPUT);        //-Sync (test) pin
+  pinMode(2,OUTPUT);
+  pinMode(3,OUTPUT);
+  pinMode(4,OUTPUT);
  
   Serial.begin(115200);
  
@@ -60,14 +63,16 @@ void setup()
  
 void loop()
 {
+  Serial.println("coucou!");
   unsigned int d;
  
   int counter = 0;
- 
+ peakVoltage = 0;
+  peakFreq = 0;
+  
   for(unsigned int d=0;d<N;d++)
   {
-  peakVoltage = 0;
-  peakFreq = 0;
+  
  
     int v=analogRead(0);    //-Read response signal
     CLR(TCCR1B,0);          //-Stop generator
@@ -84,7 +89,7 @@ void loop()
 //   plot(results[d],1);
   // delayMicroseconds(1);
  
-  //-> detection du pic maximum
+//  -> detection du pic maximum
   if(results[d] > peakVoltage){
                peakVoltage = results[d];
                peakFreq = d;
@@ -93,26 +98,40 @@ void loop()
   }
  
  
-PlottArray(1,freq,results);
+//PlottArray(1,freq,results);
  
  
   TOG(PORTB,0);            //-Toggle pin 8 after each sweep (good for scope)
- 
+
+
+ Serial.print("peakfreq = ");
+ Serial.println(peakFreq);
   if(peakFreq < seuilRien){
+               digitalWrite(3, LOW);
+               digitalWrite(4, LOW);
+               digitalWrite(2, HIGH);
                //allumer led "rien"
   }
   else{
                  if(peakFreq < seuil1doigt){
+               digitalWrite(2, LOW);
+               digitalWrite(4, LOW);
+               digitalWrite(3, HIGH);
                               //allumer led "1 doigt"
                  }
                  else{
                                 if(peakFreq < seuil2doigts){
+                                  digitalWrite(2, LOW);
+                                  digitalWrite(3, LOW);
+                                  digitalWrite(4, HIGH);
                                             //allumer led "2 doigts"
                                 }
                                 else{
+                                  digitalWrite(2, HIGH);
+                                  digitalWrite(3, HIGH);
+                                  digitalWrite(4, HIGH);
                                             //allumer led "poignee"
                                 }
                  }
   }
 }
-
