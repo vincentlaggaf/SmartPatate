@@ -34,9 +34,9 @@ int sizeOfArray = N;
  
 float peakVoltage = 0;
 float peakFreq = 0;
-float seuilRien = 55; //trouver la bonne valeur
-float seuil1doigt = 90; //trouver la bonne valeur
-float seuil2doigts = 119; //trouver la bonne valeur
+float seuilRien = 53; //trouver la bonne valeur
+float seuil1doigt = 73; //trouver la bonne valeur
+float seuil2doigts = 88; //trouver la bonne valeur
  
    
  
